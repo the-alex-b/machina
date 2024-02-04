@@ -1,9 +1,9 @@
 from machina.line import Line
 from machina.object import Object
 import numpy as np
-from typing import Sequence, List
-from manifold3d import Manifold, CrossSection, Mesh, set_circular_segments
-from typing import Self, Optional
+from typing import Sequence
+from manifold3d import CrossSection, set_circular_segments
+from typing import Self
 from machina.point import Point
 from enum import Enum, auto
 from machina.utils import get_transformation_to_xz, get_transformation_to_zy
