@@ -24,12 +24,19 @@ class Drawing:
             print("Over constrained, no solution possible")
             return
 
-        print(f"{len(solutions)} solution(s) found substituting the first")
-        self.solution = solutions[0]
-        for obj in self.objects:
-            obj.sub(
-                solutions[0]
-            )  # TODO: make sure we also sub in the point descriptions, these are now unsubstituted
+        if len(solutions) > 0:
+            print(f"{len(solutions)} possible solution(s) found")
+
+            if len(solutions[0]) == len(self.all_symbols):
+                print("Found a solution for all symbols, subsituting...")
+
+                self.solution = solutions[0]
+                for obj in self.objects:
+                    obj.sub(
+                        solutions[0]
+                    )  # TODO: make sure we also sub in the point descriptions, these are now unsubstituted
+            else:
+                print("Too many degrees of freedom... No solution")
 
     def visualize(self):
         if self.solution == None:

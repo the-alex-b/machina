@@ -17,10 +17,29 @@ pt2 = Point()
 pt2.set_x(5)
 pt2.set_y(0)
 
-pt2.set_distance(pt1, 5)
+pt3 = Point()
+# pt3.set_x(5)
+# pt3.set_y(5)
 
-line = Line(pt1, pt2)
-drawing.add(line)
+
+line1 = Line(pt1, pt2)
+line2 = Line(pt2, pt3)
+line3 = Line(pt3, pt1)
+
+pt3.set_x(5)
+line2.set_length(5)
+
+drawing.add(line1)
+drawing.add(line2)
+drawing.add(line3)
+
+
+print(drawing.all_symbols)
+print(drawing.all_constraints)
+print("----- \n")
+print(f" {len(drawing.all_constraints)} constraints")
+print(f" {len(drawing.all_symbols)} symbols")
+
 
 drawing.solve()
 drawing.visualize()
