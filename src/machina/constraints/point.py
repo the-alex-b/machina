@@ -40,3 +40,7 @@ class Point:
     def set_distance(self, other, distance):
         constraint = sp.Eq(self.point.distance(other()), 5)
         self.constraints.append(constraint)
+
+    @property
+    def code(self):
+        return f"Point({self.provisional_x},{self.provisional_y})"
