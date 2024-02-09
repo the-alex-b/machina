@@ -17,6 +17,7 @@ class CustomPlotWidget(
 ):
     def __init__(self, plot, *args, **kwargs):
         self.plot = plot
+
         super(CustomPlotWidget, self).__init__(*args, **kwargs)
 
     def mouseMoveEvent(self, event):  # Allows cursor change when hovering over point
@@ -29,6 +30,7 @@ class CustomPlotWidget(
                 QCursor(Qt.PointingHandCursor)
             )  # Change cursor to pointing hand
 
+        # Send event to parent
         super(CustomPlotWidget, self).mouseMoveEvent(event)
 
 
@@ -42,6 +44,12 @@ class ClickablePlot(QMainWindow):
         # Create the plot widget and set it as the central widget
         self.plot_widget = CustomPlotWidget(self)
         self.setCentralWidget(self.plot_widget)
+        self.plot_widget.setMenuEnabled(False)
+
+        # Fix viewport
+        self.plot_widget.setMouseEnabled(x=False, y=False)
+        self.plot_widget.setXRange(0, 10, padding=0)
+        self.plot_widget.setYRange(0, 10, padding=0)
 
         # Set up the plot
         self.plot = self.plot_widget.getPlotItem()
@@ -92,7 +100,7 @@ class ClickablePlot(QMainWindow):
             pos_in_plot = self.plot.vb.mapSceneToView(pos)
 
             pts = self.scatter.pointsAt(pos_in_plot)
-            print(pts)
+
             # no point
             if len(pts) == 0:
                 # Add point and update the plot
@@ -103,12 +111,14 @@ class ClickablePlot(QMainWindow):
                 print("selected point at index", self.selected_point)
 
             self.update_plot()
+
         # RIGHT MOUSE BUTTON -> Remove point
         if event.button() == 2:
             pos_in_plot = self.plot.vb.mapSceneToView(event.scenePos())
             pts = self.scatter.pointsAt(pos_in_plot)
 
-            self.points.pop(pts[0].index())
+            if len(pts) > 0:
+                self.points.pop(pts[0].index())
             self.update_plot()
 
         # DRAG -> move point

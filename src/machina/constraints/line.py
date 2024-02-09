@@ -7,14 +7,12 @@ from machina.constraints.point import Point
 
 
 class Line:
-    def __init__(self, point1=None, point2=None):
-        if point1 == None:
-            point1 = Point()
-
-        if point2 == None:
-            point2 = Point()
-
+    def __init__(self, point1, point2, idx1, idx2):
         self.points = [point1, point2]
+
+        self.idx1 = idx1
+        self.idx2 = idx2
+
         self.line = sp.Line(point1(), point2())
 
         self.line_constraints = []
