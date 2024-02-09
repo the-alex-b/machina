@@ -54,6 +54,13 @@ class ClickablePlot(QMainWindow):
         self.scatter.setParent(self)  # Set the parent to the main window
         self.plot.addItem(self.scatter)
 
+        self.selected_point_scatter = pg.ScatterPlotItem(
+            size=20, pen=pg.mkPen(width=7, color="b"), symbol="o"
+        )
+
+        self.selected_point_scatter.setParent(self)  # Set the parent to the main window
+        self.plot.addItem(self.selected_point_scatter)
+
         # Event handler for mouse clicks
         self.plot_widget.scene().sigMouseClicked.connect(self.on_mouse_click)
 
@@ -74,18 +81,28 @@ class ClickablePlot(QMainWindow):
             800, 50, 180, 500
         )  # Adjust size and position as needed
 
+        self.selected_point = None
+
     def on_mouse_click(self, event):
+        self.selected_point = None
         # LEFT MOUSE BUTTON -> create point
         if event.button() == 1:  # left mouse button
             # Convert the clicked position to plot coordinates
             pos = event.scenePos()
             pos_in_plot = self.plot.vb.mapSceneToView(pos)
 
-            # Add point and update the plot
-            self.points.append(Point(pos_in_plot.x(), pos_in_plot.y()))
+            pts = self.scatter.pointsAt(pos_in_plot)
+            print(pts)
+            # no point
+            if len(pts) == 0:
+                # Add point and update the plot
+                self.points.append(Point(pos_in_plot.x(), pos_in_plot.y()))
+
+            else:
+                self.selected_point = pts[0].index()
+                print("selected point at index", self.selected_point)
 
             self.update_plot()
-
         # RIGHT MOUSE BUTTON -> Remove point
         if event.button() == 2:
             pos_in_plot = self.plot.vb.mapSceneToView(event.scenePos())
@@ -96,17 +113,10 @@ class ClickablePlot(QMainWindow):
 
         # DRAG -> move point
 
-    def on_mouse_move(self, ev):
-        print(ev)
-        # Check if the cursor is over a point
-        if len(self.pointsAt(ev.pos())) > 0:
-            self.setCursor(
-                QCursor(Qt.PointingHandCursor)
-            )  # Change cursor to pointing hand
-        else:
-            self.unsetCursor()  # Restore the default cursor
-
     def update_plot(self):
+        # Clear selected point
+        print("IN UPDATE", self.selected_point)
+        self.selected_point_scatter.setData()
         # Draw points
         self.scatter.setData(
             [
@@ -114,6 +124,20 @@ class ClickablePlot(QMainWindow):
                 for pt in self.points
             ]
         )
+
+        if self.selected_point is not None:
+            print("Point has been selected")
+            selected_pt = self.points[self.selected_point]
+
+            # Draw selected point
+            self.selected_point_scatter.setData(
+                [
+                    {
+                        "pos": (selected_pt.provisional_x, selected_pt.provisional_y),
+                        "data": 1,
+                    }
+                ]
+            )
 
         # Draw lines
         if len(self.points) > 1:
@@ -123,7 +147,6 @@ class ClickablePlot(QMainWindow):
         else:
             self.line.setData()
 
-        print(self.code_representation)
         self.update_list_widget()
 
     def update_list_widget(self):
