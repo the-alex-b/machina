@@ -170,6 +170,9 @@ class ClickablePlot(QMainWindow):
     def clear_drawing(self):
         # Clear the points and update the plot
         self.points = []
+
+        self.controller.code = self.controller.to_code
+
         self.update_plot()
 
     def updatePointPosition(self, index, newPos):
