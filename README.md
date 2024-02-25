@@ -4,5 +4,7 @@ Machina is CAD software with a code interface. It stems from frustration with us
 
 [Demo here](https://machina.autnms.com/)
 
+![Demo image](docs/images/machina.png)
+
 ## Status
 For now Machina is very alpha and very 'work in progress'.
